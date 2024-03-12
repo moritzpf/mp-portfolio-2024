@@ -1,0 +1,116 @@
+---
+import Layout from "../layouts/Layout.astro";
+interface hardCodedPageData {
+    title: string;
+    text: string;
+    slug: string;
+    pageType: string;
+    cmsData: null;
+}
+
+const pageData: hardCodedPageData = {
+    title: "index",
+    text: "index",
+    slug: "index",
+    pageType: "index",
+    cmsData: null
+};
+---
+
+<Layout pageData={pageData}>
+    <main>
+        <div class="container">
+            <h1 data-splitting>Hi Bold AG!</h1>
+            <div class="main-content">
+                <div class="scroll-tutorial">
+                    <p>Scroll</p>
+                    <svg width="51" height="50" viewBox="1 -40 31 30" class="scroll-tutorial__arrow" xmlns="http://www.w3.org/2000/svg"><path d="M30.9600-24.6240L25.2000-18.8640Q24.6960-18.4320 24.9480-17.8200Q25.2000-17.2080 25.8480-17.2080L25.8480-17.2080L27.0000-17.2080L27.0000-14.9760L25.5600-14.9760Q21.3120-14.9760 18.2160-11.9520L18.2160-11.9520L16.9200-10.6560L12.8160-10.5120L15.9120-13.5360Q17.4960-15.1920 19.8000-15.1920L19.8000-15.1920L26.7840-15.1920L26.7840-16.9920L23.3280-16.9920L19.3680-16.9920L27.0000-24.6240L25.4880-26.1360Q22.4640-29.1600 18.1440-29.1600L18.1440-29.1600L16.7760-29.1600L16.7760-31.3920L17.9280-31.3920Q18.5760-31.3920 18.8280-31.9680Q19.0800-32.5440 18.5760-33.0480L18.5760-33.0480L12.8160-38.8080L16.7760-38.8080L24.4080-31.1760L20.4480-31.1760L16.9920-31.1760L16.9920-29.3040L23.9760-29.3040Q26.2800-29.3040 27.8640-27.7200L27.8640-27.7200L30.9600-24.6240ZM15.7680-17.2080L15.7680-14.9760L14.3280-14.9760Q10.0800-14.9760 6.9840-11.9520L6.9840-11.9520L5.6880-10.6560L1.5840-10.5120L4.6080-13.5360Q6.2640-15.1920 8.5680-15.1920L8.5680-15.1920L15.5520-15.1920L15.5520-16.9920L12.0960-16.9920L8.1360-16.9920L15.7680-24.6240L14.2560-26.1360Q11.2320-29.1600 6.9120-29.1600L6.9120-29.1600L5.5440-29.1600L5.5440-31.3920L6.6960-31.3920Q7.3440-31.3920 7.5960-31.9680Q7.8480-32.5440 7.3440-33.0480L7.3440-33.0480L1.5840-38.8080L5.5440-38.8080L13.1760-31.1760L9.2160-31.1760L5.7600-31.1760L5.6880-29.3040L12.7440-29.3040Q15.0480-29.3040 16.6320-27.7200L16.6320-27.7200L19.7280-24.6240L13.8960-18.8640Q13.4640-18.4320 13.7160-17.8200Q13.9680-17.2080 14.6160-17.2080L14.6160-17.2080L15.7680-17.2080Z"/></svg>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<style is:global>
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: calc(50vh - 50px);
+        margin-bottom: 1rem;
+        font-family: 'sussex', sans-serif;
+        font-weight: 200;
+        margin-top: 50px;
+        margin-bottom: 0;
+        line-height: 1;
+    }
+
+    [data-splitting] span {
+        display: inline-block;
+    }
+    
+    [data-splitting] .whitespace {
+        width: 100px;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        
+        align-items: center;
+        width: calc(100% - 40px);   
+        min-height: 100vh;
+        background-color: var(--background-color);
+        position: relative;
+        z-index: 2;
+        border: 1px solid var(--primary-color);
+
+        border-radius: 50px;
+    }
+
+    .scroll-tutorial {
+        height: 50vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        p {
+            font-size: 6rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'sussex', sans-serif;
+            font-weight: 400;
+        }
+
+        .scroll-tutorial__arrow {
+            transform: rotate(90deg);
+            fill: var(--primary-color);
+        }   
+    }
+    
+</style>
+
+<script>
+    import gsap from "gsap";
+    import Splitting from "splitting";
+
+    Splitting();
+
+        gsap.from("h1 .char", {
+            duration: 2,
+            opacity: 0,
+            rotation: -6,
+            y: 500,
+            ease: "power4.out",
+            stagger: 0.05
+        });
+    
+  </script>

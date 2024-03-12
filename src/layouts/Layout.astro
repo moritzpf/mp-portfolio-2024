@@ -1,0 +1,187 @@
+---
+import Preloader from '../components/astro/Preloader.astro';
+import Navigation from '../components/astro//Navigation.astro';
+import Globals from '../components/astro//Globals.astro';
+import Noise from '../components/astro/Noise.astro';
+import type { cmsData } from '../helper/WordpressBlocks';
+
+
+const { pageData } = Astro.props;
+
+
+pageData.cmsData = pageData.cmsData && pageData.cmsData.navigationSettings ? pageData.cmsData.navigationSettings : null
+
+---
+
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <title>{pageData.title + " - ArtOfDark Tattoo & Piercing Memmingen"}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="Asli – AJAX Portfolio HTML5 Template" />
+    </head>
+        <!-- <Preloader /> -->
+        <!-- <Navigation cmsNavData={pageData.cmsData} /> -->
+
+        <!-- <Globals /> -->
+    <body class="smooth-scroll">
+        <div id="scroll-container">
+            <slot />
+            <Noise />
+        </div>
+    </body>
+</html>
+
+
+<style is:global>
+
+    @font-face {
+        font-family: 'oasis';
+        src: url('/fonts/oasis.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'sussex';
+        src: url('/fonts/sussex.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    :root {
+        --primary-color: #00326c;
+        --secondary-color: #ffe0c9;
+        --background-color: #ffe0c9;
+    }
+
+    * {
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--primary-color);
+        background-color: var(--background-color);
+        overflow-x: hidden;
+    }
+</style>
+
+<script>
+    import Scrollbar from "smooth-scrollbar";
+    import { ScrollbarPlugin } from "smooth-scrollbar";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import { gsap } from "gsap";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    var isFirefox = navigator.userAgent.toLocaleLowerCase().indexOf("firefox") > -1;
+    if (isFirefox) {
+        document.body.classList.add("isFirefox");
+    }
+
+    const debugMode = false;
+
+    document.body.classList.add("isMobile");
+
+    class FixMobileScroll extends ScrollbarPlugin {
+        static pluginName = "mobile";
+        static defaultOptions = {
+            letGoSpeed: 0.25,
+            holdingSpeed: 0.75,
+        };
+
+        transformDelta(delta, fromEvent) {
+            if (fromEvent.type !== "touchend") {
+                return {
+                    x: delta.x * this.options.holdingSpeed,
+                    y: delta.y * this.options.holdingSpeed,
+                };
+            }
+            return {
+                x: delta.x * this.options.letGoSpeed,
+                y: delta.y * this.options.letGoSpeed,
+            };
+        }
+    }
+
+    Scrollbar.use(FixMobileScroll);
+
+    let scrollPositionX = 0,
+        scrollPositionY = 0,
+        bodyScrollBar = Scrollbar.init(document.querySelector("#scroll-container"), {
+            damping: 0.04,
+            thumbMinSize: 20,
+            renderByPixel: true,
+            continuousScrolling: true,
+            alwaysShowTracks: true,
+        });
+
+    bodyScrollBar.addListener(({ offset }) => {
+        scrollPositionX = offset.y;
+        scrollPositionY = offset.y;
+
+        if (offset.y !== 0) {
+            bodyScrollBar.setPosition(0);
+        }
+    });
+
+    bodyScrollBar.setPosition(0, 0);
+    bodyScrollBar.track.xAxis.element.remove();
+
+    // Tell ScrollTrigger to use these proxy getter/setter methods for the "body" element:
+    ScrollTrigger.scrollerProxy("body", {
+        scrollTop(value) {
+            if (arguments.length) {
+                bodyScrollBar.scrollTop = value;
+            }
+            return bodyScrollBar.scrollTop;
+        },
+    });
+
+    // when smooth scroller updates, tell ScrollTrigger to update() too.
+    bodyScrollBar.addListener(ScrollTrigger.update);
+    const scrollToElements = document.querySelectorAll(".scrollTo");
+    for (let i = 0; i < scrollToElements.length; i++) {
+        scrollToElements[i].addEventListener("click", function (e) {
+            e.preventDefault();
+            const targethref = this.getAttribute("href");
+            const targetoffset = this.getAttribute("data-offset");
+            const targetheight = this.getAttribute("data-scrollheight");
+            const target = document.querySelector(targethref);
+            let targetPosition = target.getBoundingClientRect().top - targetoffset;
+            let targetScrollToDuration = targetPosition / 2;
+            if (debugMode) {
+                targetScrollToDuration = 0;
+            }
+            if (targetheight) {
+                targetScrollToDuration = (targetPosition / 2) * -1;
+                targetPosition = targetheight;
+            }
+            //get global offset of target element
+            console.log("New ScrollTo");
+            console.table({
+                targethref: targethref,
+                targetoffset: targetoffset,
+                targetheight: targetheight,
+                targetPosition: targetPosition,
+                targetScrollToDuration: targetScrollToDuration,
+            });
+            bodyScrollBar.scrollTo(0, targetPosition, targetScrollToDuration);
+        });
+    }
+
+</script>

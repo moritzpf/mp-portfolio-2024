@@ -1,0 +1,13 @@
+.mpmedia-block {
+    margin-bottom: 50px;
+    border-radius: 25px;
+    background: rgb(99, 99, 190);
+    color: #000000;
+    padding-left: 30px;
+    border: solid rgb(99, 99, 190) 5px;
+    transition: border-color 0.5s;
+}
+
+.is-selected .mpmedia-block {
+    border-color: rgb(149, 149, 255);
+}

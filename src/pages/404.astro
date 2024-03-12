@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro";
+interface pageData404 {
+    title: string;
+    text: string;
+    slug: string;
+    pageType: string;
+    cmsData: null;
+}
+
+const pageData: pageData404 = {
+    title: "404",
+    text: "404",
+    slug: "404",
+    pageType: "404",
+    cmsData: null
+};
+---
+
+<Layout pageData={pageData}>
+    <div class="container">
+        <h1>404</h1>
+        <p>Page not found</p>
+    </div>
+</Layout>

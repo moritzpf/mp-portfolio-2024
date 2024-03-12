@@ -1,0 +1,100 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PageGenerator from "../components/WordpressBlockManager.svelte";
+import { WordpressManager, wp } from '../helper/WordpressBlocks';
+import type { cmsData, cmsPage, cmsBlock } from '../helper/WordpressBlocks';
+import { createBlockFiles } from "../helper/ThemeCreator";
+import { wrap } from "module";
+
+
+export async function getStaticPaths() {
+    await wp.init();
+    const pages: any[] = [];
+
+     // Fetch data asynchronously
+    const cmsData = wp.cmsData as cmsData;
+
+    if(!cmsData) {
+        throw new Error("No pages found");
+        return;
+    }
+
+    // cmsData.posts.nodes.forEach((post: any) => {
+    //     pages.push({
+    //         slug: `/blog/${post.slug}`,
+    //         title: post.title,
+    //         text: post.title + " is a great product",
+    //         pageType: "blog"
+    //     });
+    // });
+    
+    cmsData.pages.nodes.forEach((page: cmsPage) => {
+        if (page.slug.toLowerCase() === "startseite") {
+            pages.push({
+                slug: "/",
+                title: page.title,
+                text: page.title + " is a great product",
+                pageType: "page"
+            });
+            pages.push({
+                slug: undefined,
+                title: page.title,
+                text: page.title + " is a great product",
+                pageType: "page"
+            });
+            page.slug = "/";
+            return;
+        }
+        pages.push({
+            slug: page.slug,
+            title: page.title,
+            text: page.title + " is a great product",
+            pageType: "page"
+        });
+    });
+    return pages.map(({ slug, title, text, pageType }) => {
+        if(slug === undefined) {
+            slug = "/";
+            return {
+                params: { slug: undefined },
+                props: { title, text, cmsData, slug, pageType }
+            };
+        }
+        return {
+            params: { slug },
+            props: { title, text, cmsData, slug, pageType }
+        };
+    });
+}
+
+const { title, text, cmsData, slug, pageType } = Astro.props;
+
+interface pageData {
+    title: string;
+    text: string;
+    slug: string;
+    pageType: string
+    cmsData: cmsData
+}
+
+const pageData: pageData = {
+    title,
+    text,
+    slug,
+    pageType,
+    cmsData
+};
+
+let thisPageData = cmsData.pages.nodes.find((page: cmsPage) => page.slug === slug);
+
+if(!thisPageData) {
+    throw new Error("Page not found");
+}
+
+---
+
+<Layout pageData={pageData}>
+    <main>
+        <PageGenerator pageData={thisPageData} />
+    </main>
+</Layout>
